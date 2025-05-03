@@ -7,7 +7,7 @@ import {
   formatDate, 
   getProgressPercentage 
 } from '../utils/formatters';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Calendar, Clock, ArrowUp, ArrowDown } from 'lucide-react';
 import { Progress } from './ui/progress';
 
 interface TargetCardProps {
@@ -38,6 +38,37 @@ const TargetCard: React.FC<TargetCardProps> = ({ target }) => {
   // Get last transaction if available
   const lastTransaction = transactions && transactions.length > 0 ? transactions[0] : null;
   
+  // Function to calculate remaining hours and minutes
+  const getRemainingTime = () => {
+    const targetDate = new Date(target.endDate).getTime();
+    const now = new Date().getTime();
+    const difference = targetDate - now;
+    
+    if (difference <= 0) return { hours: 0, minutes: 0 };
+    
+    // Calculate remaining hours and minutes
+    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+    
+    return { hours, minutes };
+  };
+  
+  const { hours, minutes } = getRemainingTime();
+  
+  // Get transaction type icon
+  const getTransactionIcon = (type: string) => {
+    switch (type) {
+      case 'Buy':
+      case 'Add':
+        return <ArrowUp size={16} className="text-usd" />;
+      case 'Sell':
+      case 'Remove':
+        return <ArrowDown size={16} className="text-destructive" />;
+      default:
+        return null;
+    }
+  };
+  
   return (
     <div className="wallet-card mb-4">
       <div className="flex items-center justify-between mb-3">
@@ -63,7 +94,8 @@ const TargetCard: React.FC<TargetCardProps> = ({ target }) => {
         
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-3">
           <div className="text-white flex justify-between">
-            <span className="font-semibold">
+            <span className="font-semibold flex items-center">
+              <Clock size={16} className="mr-1" />
               {daysLeft > 0 ? `${daysLeft} days left` : "Target date reached"}
             </span>
             <span className="font-bold">
@@ -75,6 +107,30 @@ const TargetCard: React.FC<TargetCardProps> = ({ target }) => {
       
       <div className="mb-4">
         <Progress value={progress} className="h-2 animate-pulse" />
+      </div>
+      
+      {/* Countdown Display */}
+      <div className="flex justify-center gap-3 mb-4">
+        <div className="flex flex-col items-center">
+          <div className="bg-accent/20 w-14 h-14 rounded-full flex items-center justify-center text-lg font-bold animate-pulse">
+            {daysLeft}
+          </div>
+          <span className="text-xs mt-1">Days</span>
+        </div>
+        
+        <div className="flex flex-col items-center">
+          <div className="bg-accent/20 w-14 h-14 rounded-full flex items-center justify-center text-lg font-bold animate-pulse">
+            {hours}
+          </div>
+          <span className="text-xs mt-1">Hours</span>
+        </div>
+        
+        <div className="flex flex-col items-center">
+          <div className="bg-accent/20 w-14 h-14 rounded-full flex items-center justify-center text-lg font-bold animate-pulse">
+            {minutes}
+          </div>
+          <span className="text-xs mt-1">Mins</span>
+        </div>
       </div>
       
       <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
@@ -89,7 +145,9 @@ const TargetCard: React.FC<TargetCardProps> = ({ target }) => {
         </div>
         
         <div className="border border-gray-200 rounded-lg p-2 col-span-2">
-          <p className="text-gray-500">Target Date</p>
+          <p className="text-gray-500 flex items-center">
+            <Calendar size={16} className="mr-1" /> Target Date
+          </p>
           <p className="font-medium">{formatDate(target.endDate)}</p>
         </div>
       </div>
@@ -98,7 +156,12 @@ const TargetCard: React.FC<TargetCardProps> = ({ target }) => {
         <h4 className="text-sm font-medium mb-2">Last Transaction</h4>
         {lastTransaction ? (
           <div className="bg-gray-50 p-2 rounded-lg text-xs">
-            <p className="font-medium">{lastTransaction.type} {lastTransaction.assetName}</p>
+            <p className="font-medium flex items-center">
+              <span className="w-5 h-5 bg-gray-200 rounded-full flex items-center justify-center mr-1.5">
+                {getTransactionIcon(lastTransaction.type)}
+              </span>
+              {lastTransaction.type} {lastTransaction.assetName}
+            </p>
             <div className="flex justify-between">
               <span>{formatAmount(lastTransaction.amount * lastTransaction.price, lastTransaction.currency)}</span>
               <span className="text-gray-500">{formatDate(new Date(lastTransaction.timestamp).toISOString())}</span>
