@@ -7,7 +7,7 @@ import RemoveAsset from '../components/RemoveAsset';
 import TransactionHistory from '../components/TransactionHistory';
 import CurrencyToggle from '../components/CurrencyToggle';
 import { formatAmount } from '../utils/formatters';
-import { plus, minus, history } from 'lucide-react';
+import { Plus, Minus, History } from 'lucide-react';
 
 type ActiveView = 'main' | 'add' | 'remove' | 'history';
 
@@ -17,11 +17,6 @@ const Wallet: React.FC = () => {
   
   const totalBalance = getTotalWalletBalance();
   const totalBalanceInCurrency = currency === 'USD' ? totalBalance : totalBalance * 88;
-  
-  // Icons
-  const Plus = plus;
-  const Minus = minus;
-  const History = history;
   
   // Handler for opening asset form for additional purchase
   const handleAddMoreToAsset = (assetId: string) => {

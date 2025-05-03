@@ -1,13 +1,9 @@
 
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { home, wallet } from 'lucide-react';
+import { Home, Wallet } from 'lucide-react';
 
 const BottomNavigation: React.FC = () => {
-  // Icons
-  const Home = home;
-  const Wallet = wallet;
-  
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-10">
       <div className="flex justify-around py-2">
