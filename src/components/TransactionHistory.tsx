@@ -55,16 +55,18 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({ onClose }) => {
                 key={transaction.id}
                 className="border border-gray-200 rounded-lg p-3"
               >
-                <div className="flex justify-between mb-1">
+                <div className="flex justify-between items-center mb-1">
                   <div className="font-medium">{transaction.assetName}</div>
-                  <div>{renderTransactionType(transaction.type)}</div>
+                  <div className="flex items-center gap-2">
+                    {renderTransactionType(transaction.type)}
+                    <div className="font-semibold">
+                      {formatAmount(displayAmount, currency)}
+                    </div>
+                  </div>
                 </div>
                 
-                <div className="flex justify-between text-sm">
-                  <div className="text-gray-500">{formatTimestamp(transaction.timestamp)}</div>
-                  <div className="font-semibold">
-                    {formatAmount(displayAmount, currency)}
-                  </div>
+                <div className="text-sm text-gray-500 text-right">
+                  {formatTimestamp(transaction.timestamp)}
                 </div>
               </div>
             );

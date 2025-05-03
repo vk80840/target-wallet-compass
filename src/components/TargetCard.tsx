@@ -109,24 +109,24 @@ const TargetCard: React.FC<TargetCardProps> = ({ target }) => {
         <Progress value={progress} className="h-2 animate-pulse" />
       </div>
       
-      {/* Countdown Display */}
+      {/* Countdown Display - Changed from circular to square */}
       <div className="flex justify-center gap-3 mb-4">
         <div className="flex flex-col items-center">
-          <div className="bg-accent/20 w-14 h-14 rounded-full flex items-center justify-center text-lg font-bold animate-pulse">
+          <div className="bg-accent/20 w-14 h-14 rounded-md flex items-center justify-center text-lg font-bold animate-pulse">
             {daysLeft}
           </div>
           <span className="text-xs mt-1">Days</span>
         </div>
         
         <div className="flex flex-col items-center">
-          <div className="bg-accent/20 w-14 h-14 rounded-full flex items-center justify-center text-lg font-bold animate-pulse">
+          <div className="bg-accent/20 w-14 h-14 rounded-md flex items-center justify-center text-lg font-bold animate-pulse">
             {hours}
           </div>
           <span className="text-xs mt-1">Hours</span>
         </div>
         
         <div className="flex flex-col items-center">
-          <div className="bg-accent/20 w-14 h-14 rounded-full flex items-center justify-center text-lg font-bold animate-pulse">
+          <div className="bg-accent/20 w-14 h-14 rounded-md flex items-center justify-center text-lg font-bold animate-pulse">
             {minutes}
           </div>
           <span className="text-xs mt-1">Mins</span>
@@ -156,15 +156,19 @@ const TargetCard: React.FC<TargetCardProps> = ({ target }) => {
         <h4 className="text-sm font-medium mb-2">Last Transaction</h4>
         {lastTransaction ? (
           <div className="bg-gray-50 p-2 rounded-lg text-xs">
-            <p className="font-medium flex items-center">
-              <span className="w-5 h-5 bg-gray-200 rounded-full flex items-center justify-center mr-1.5">
-                {getTransactionIcon(lastTransaction.type)}
+            <div className="flex justify-between items-center mb-1">
+              <p className="font-medium flex items-center">
+                <span className="w-5 h-5 bg-gray-200 rounded-full flex items-center justify-center mr-1.5">
+                  {getTransactionIcon(lastTransaction.type)}
+                </span>
+                {lastTransaction.type} {lastTransaction.assetName}
+              </p>
+              <span className="font-semibold">
+                {formatAmount(lastTransaction.amount * lastTransaction.price, lastTransaction.currency)}
               </span>
-              {lastTransaction.type} {lastTransaction.assetName}
-            </p>
-            <div className="flex justify-between">
-              <span>{formatAmount(lastTransaction.amount * lastTransaction.price, lastTransaction.currency)}</span>
-              <span className="text-gray-500">{formatDate(new Date(lastTransaction.timestamp).toISOString())}</span>
+            </div>
+            <div className="text-gray-500 text-right">
+              {formatDate(new Date(lastTransaction.timestamp).toISOString())}
             </div>
           </div>
         ) : (
