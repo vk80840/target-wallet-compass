@@ -17,7 +17,6 @@ const CurrencyToggle: React.FC = () => {
         currency === 'USD' ? 'bg-usd/20' : 'bg-inr/20'
       }`}
       style={{
-        transform: currency === 'USD' ? 'rotate(0deg)' : 'rotate(180deg)',
         transition: 'transform 0.5s ease-in-out'
       }}
     >
