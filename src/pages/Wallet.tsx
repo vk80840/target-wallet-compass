@@ -18,19 +18,14 @@ const Wallet: React.FC = () => {
   const totalBalance = getTotalWalletBalance();
   const totalBalanceInCurrency = currency === 'USD' ? totalBalance : totalBalance * 88;
   
-  // Handler for opening asset form for additional purchase
-  const handleAddMoreToAsset = (assetId: string) => {
-    // For now just open the add form. In a real app, we'd pre-fill the form with the asset details.
-    setActiveView('add');
-  };
-  
   return (
     <div className="p-4 pb-20">
       {activeView === 'main' && (
         <>
-          <h1 className="text-2xl font-display font-bold mb-2 text-center">My Wallet</h1>
-          
-          <CurrencyToggle />
+          <div className="flex items-center justify-between mb-2">
+            <h1 className="text-2xl font-display font-bold">My Wallet</h1>
+            <CurrencyToggle />
+          </div>
           
           <div className="wallet-card mb-6">
             <h2 className="text-gray-500 text-sm mb-1">Total Balance</h2>
@@ -44,26 +39,7 @@ const Wallet: React.FC = () => {
             </div>
           </div>
           
-          <div className="mb-6">
-            <h2 className="font-display font-semibold mb-3">My Assets</h2>
-            {assets.length === 0 ? (
-              <div className="bg-gray-50 p-6 rounded-lg text-center text-gray-500">
-                No assets added yet. Click the Add button below to add your first asset.
-              </div>
-            ) : (
-              <div>
-                {assets.map((asset) => (
-                  <AssetCard 
-                    key={asset.id} 
-                    asset={asset} 
-                    onAddMore={() => handleAddMoreToAsset(asset.id)} 
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-          
-          <div className="wallet-card flex justify-around">
+          <div className="wallet-card flex justify-around mb-6">
             <button
               onClick={() => setActiveView('add')}
               className="flex flex-col items-center p-3 text-accent-foreground"
@@ -93,6 +69,24 @@ const Wallet: React.FC = () => {
               </div>
               <span className="text-sm font-medium">History</span>
             </button>
+          </div>
+          
+          <div className="mb-6">
+            <h2 className="font-display font-semibold mb-3">My Assets</h2>
+            {assets.length === 0 ? (
+              <div className="bg-gray-50 p-6 rounded-lg text-center text-gray-500">
+                No assets added yet. Click the Add button above to add your first asset.
+              </div>
+            ) : (
+              <div>
+                {assets.map((asset) => (
+                  <AssetCard 
+                    key={asset.id} 
+                    asset={asset}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </>
       )}

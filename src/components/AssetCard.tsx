@@ -5,10 +5,9 @@ import { formatAmount, convertUsdToInr } from '../utils/formatters';
 
 interface AssetCardProps {
   asset: Asset;
-  onAddMore: () => void;
 }
 
-const AssetCard: React.FC<AssetCardProps> = ({ asset, onAddMore }) => {
+const AssetCard: React.FC<AssetCardProps> = ({ asset }) => {
   const { currency } = useAppContext();
   
   // Calculate value based on asset's own currency
@@ -22,10 +21,9 @@ const AssetCard: React.FC<AssetCardProps> = ({ asset, onAddMore }) => {
   
   return (
     <div 
-      className={`wallet-card mb-3 cursor-pointer hover:shadow-md transition-shadow ${
+      className={`wallet-card mb-3 ${
         asset.currency === 'USD' ? 'border-l-4 border-l-usd' : 'border-l-4 border-l-inr'
       }`}
-      onClick={onAddMore}
     >
       <div className="flex items-center">
         <div className="w-12 h-12 rounded-full overflow-hidden mr-3 border border-gray-200">

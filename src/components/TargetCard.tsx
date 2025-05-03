@@ -7,22 +7,21 @@ import {
   formatDate, 
   getProgressPercentage 
 } from '../utils/formatters';
+import { Trash2 } from 'lucide-react';
+import { Progress } from './ui/progress';
 
 interface TargetCardProps {
   target: Target;
 }
 
 const TargetCard: React.FC<TargetCardProps> = ({ target }) => {
-  const { currency, removeTarget, toggleAddFund, getTotalWalletBalance } = useAppContext();
+  const { currency, removeTarget, getTotalWalletBalance, transactions } = useAppContext();
   
   const daysLeft = getDaysRemaining(target.endDate);
   const walletBalance = getTotalWalletBalance();
   
-  // Calculate collected amount (including wallet balance if addFund is true)
-  const actualCollectedAmount = target.collectedAmount;
-  const displayCollectedAmount = target.addFund 
-    ? actualCollectedAmount + walletBalance 
-    : actualCollectedAmount;
+  // Use wallet balance as collected amount for display
+  const displayCollectedAmount = walletBalance;
   
   // Calculate progress percentage
   const progress = getProgressPercentage(displayCollectedAmount, target.price);
@@ -35,6 +34,9 @@ const TargetCard: React.FC<TargetCardProps> = ({ target }) => {
   const collectedInCurrency = currency === 'USD' 
     ? displayCollectedAmount 
     : displayCollectedAmount * 88;
+
+  // Get last transaction if available
+  const lastTransaction = transactions && transactions.length > 0 ? transactions[0] : null;
   
   return (
     <div className="wallet-card mb-4">
@@ -42,9 +44,10 @@ const TargetCard: React.FC<TargetCardProps> = ({ target }) => {
         <h3 className="text-lg font-display font-semibold">{target.name}</h3>
         <button 
           onClick={() => removeTarget(target.id)}
-          className="text-xs px-2 py-1 bg-destructive text-destructive-foreground rounded-md"
+          className="p-2 text-destructive rounded-full hover:bg-destructive/10 transition-colors"
+          aria-label="Remove Target"
         >
-          Remove Target
+          <Trash2 size={18} />
         </button>
       </div>
       
@@ -70,14 +73,8 @@ const TargetCard: React.FC<TargetCardProps> = ({ target }) => {
         </div>
       </div>
       
-      <div className="progress-bar mb-4">
-        <div 
-          className="progress-bar-fill"
-          style={{ 
-            width: `${progress}%`, 
-            backgroundColor: progress < 100 ? "#64B5F6" : "#4CAF50" 
-          }}
-        ></div>
+      <div className="mb-4">
+        <Progress value={progress} className="h-2 animate-pulse" />
       </div>
       
       <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
@@ -91,36 +88,27 @@ const TargetCard: React.FC<TargetCardProps> = ({ target }) => {
           <p className="font-medium">{formatAmount(collectedInCurrency, currency)}</p>
         </div>
         
-        <div className="border border-gray-200 rounded-lg p-2">
+        <div className="border border-gray-200 rounded-lg p-2 col-span-2">
           <p className="text-gray-500">Target Date</p>
           <p className="font-medium">{formatDate(target.endDate)}</p>
-        </div>
-        
-        <div className="border border-gray-200 rounded-lg p-2">
-          <p className="text-gray-500">Add Fund</p>
-          <div className="flex items-center mt-1">
-            <div
-              className={`relative w-10 h-5 rounded-full cursor-pointer ${
-                target.addFund ? 'bg-accent' : 'bg-gray-300'
-              }`}
-              onClick={() => toggleAddFund(target.id)}
-            >
-              <div
-                className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow-sm transform transition-transform ${
-                  target.addFund ? 'translate-x-5' : ''
-                }`}
-              ></div>
-            </div>
-            <span className="ml-2">{target.addFund ? 'On' : 'Off'}</span>
-          </div>
         </div>
       </div>
       
       <div className="border-t border-gray-200 pt-3">
         <h4 className="text-sm font-medium mb-2">Last Transaction</h4>
-        <div className="bg-gray-50 p-2 rounded-lg text-xs">
-          <p>No transactions yet</p>
-        </div>
+        {lastTransaction ? (
+          <div className="bg-gray-50 p-2 rounded-lg text-xs">
+            <p className="font-medium">{lastTransaction.type} {lastTransaction.assetName}</p>
+            <div className="flex justify-between">
+              <span>{formatAmount(lastTransaction.amount * lastTransaction.price, lastTransaction.currency)}</span>
+              <span className="text-gray-500">{formatDate(new Date(lastTransaction.timestamp).toISOString())}</span>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-gray-50 p-2 rounded-lg text-xs">
+            <p>No transactions yet</p>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -10,9 +10,10 @@ const Home: React.FC = () => {
   
   return (
     <div className="p-4 pb-20">
-      <h1 className="text-2xl font-display font-bold mb-2 text-center">My Targets</h1>
-      
-      <CurrencyToggle />
+      <div className="flex items-center justify-between mb-2">
+        <h1 className="text-2xl font-display font-bold">My Targets</h1>
+        <CurrencyToggle />
+      </div>
       
       {targets.length === 0 ? (
         <AddTargetForm />
